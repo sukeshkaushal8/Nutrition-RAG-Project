@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "nutrition-rag"
+version = "0.1.0"
+description = "A RAG chatbot that answers questions about food, nutrition, and food safety from official dietary guidance documents."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+[project.scripts]
+ingest = "scripts.ingest:main"
+evaluate = "scripts.evaluate:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

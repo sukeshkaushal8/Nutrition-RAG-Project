@@ -1,0 +1,235 @@
+{
+    "documents": [
+        {
+            "doc_id": "who-healthy-diet",
+            "title": "Healthy Diet Fact Sheet",
+            "publisher": "WHO",
+            "year": 2024,
+            "source_url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet",
+            "retrieval_date": "2026-09-29",
+            "format": "html",
+            "local_path": "data/raw/who-healthy-diet.html",
+            "category": "nutrition"
+        },
+        {
+            "doc_id": "canada-food-guide",
+            "title": "Canada's Food Guide",
+            "publisher": "Health Canada",
+            "year": 2019,
+            "source_url": "https://food-guide.canada.ca/en/",
+            "retrieval_date": "2026-09-29",
+            "format": "pdf",
+            "local_path": "data/raw/canada-food-guide.pdf",
+            "category": "nutrition"
+        },
+        {
+            "doc_id": "harvard-eating-plate",
+            "title": "Healthy Eating Plate",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": 2024,
+            "source_url": "https://nutritionsource.hsph.harvard.edu/healthy-eating-plate/",
+            "retrieval_date": "2026-09-29",
+            "format": "html",
+            "local_path": "data/raw/harvard-eating-plate.html",
+            "category": "nutrition"
+        },
+        {
+            "doc_id": "nhs-eatwell-guide",
+            "title": "Eat Well Guide",
+            "publisher": "NHS",
+            "year": 2024,
+            "source_url": "https://www.nhs.uk/live-well/eat-well/food-guidelines-and-food-labels/the-eatwell-guide/",
+            "retrieval_date": "2026-09-29",
+            "format": "html",
+            "local_path": "data/raw/nhs-eatwell-guide.html",
+            "category": "nutrition"
+        },
+        {
+            "doc_id": "nhs-balanced-diet",
+            "title": "Balanced Diet Guide",
+            "publisher": "NHS",
+            "year": 2024,
+            "source_url": "https://www.nhs.uk/live-well/eat-well/how-to-eat-a-balanced-diet/eating-a-balanced-diet/",
+            "retrieval_date": "2026-09-29",
+            "format": "html",
+            "local_path": "data/raw/nhs-balanced-diet.html",
+            "category": "nutrition"
+        },
+        {
+            "doc_id": "icmr-dietary-guidelines",
+            "title": "Dietary Guidelines for Indians (2024)",
+            "publisher": "ICMR-NIN",
+            "year": 2024,
+            "source_url": "https://www.nin.res.in/dietaryguidelines/DietaryGuidelinesforIndians_2024.pdf",
+            "retrieval_date": "2026-09-29",
+            "format": "pdf",
+            "local_path": "data/raw/icmr-dietary-guidelines.pdf",
+            "category": "nutrition"
+        },
+        {
+            "doc_id": "who-five-keys",
+            "title": "Five Keys to Safer Food Manual",
+            "publisher": "WHO",
+            "year": 2006,
+            "source_url": "https://iris.who.int/bitstream/handle/10665/43546/9789241594639_eng.pdf",
+            "retrieval_date": "2026-09-29",
+            "format": "pdf",
+            "local_path": "data/raw/who-five-keys.pdf",
+            "category": "food_safety"
+        },
+        {
+            "doc_id": "harvard-kids-plate",
+            "title": "Kids Healthy Eating Plate",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/kids-healthy-eating-plate/",
+            "local_path": "data/raw/harvard-kids-plate.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "harvard-whole-grains",
+            "title": "Whole Grains",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/what-should-you-eat/whole-grains/",
+            "local_path": "data/raw/harvard-whole-grains.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "harvard-protein",
+            "title": "Protein",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/what-should-you-eat/protein/",
+            "local_path": "data/raw/harvard-protein.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "harvard-vegetables-fruits",
+            "title": "Vegetables and Fruits",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/what-should-you-eat/vegetables-and-fruits/",
+            "local_path": "data/raw/harvard-vegetables-fruits.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "harvard-healthy-fats",
+            "title": "Healthy Fats",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/what-should-you-eat/healthy-fats/",
+            "local_path": "data/raw/harvard-healthy-fats.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "harvard-dairy",
+            "title": "Milk and Dairy Choices",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/what-should-you-eat/milk-and-dairy-choices/",
+            "local_path": "data/raw/harvard-dairy.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "harvard-water",
+            "title": "Water",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/what-should-you-eat/water/",
+            "local_path": "data/raw/harvard-water.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "harvard-sodium",
+            "title": "Sodium",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/what-should-you-eat/sodium/",
+            "local_path": "data/raw/harvard-sodium.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "harvard-sugary-drinks",
+            "title": "Sugar-Sweetened Beverages",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/what-should-you-eat/sugar-sweetened-beverages/",
+            "local_path": "data/raw/harvard-sugary-drinks.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "harvard-red-meat",
+            "title": "Limiting Red and Processed Meat",
+            "publisher": "Harvard T.H. Chan School of Public Health",
+            "year": "2024",
+            "source_url": "https://nutritionsource.hsph.harvard.edu/what-should-you-eat/limiting-red-and-processed-meat/",
+            "local_path": "data/raw/harvard-red-meat.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "australia-dietary-guidelines",
+            "title": "Australian Dietary Guidelines",
+            "publisher": "NHMRC",
+            "year": "2013",
+            "source_url": "https://www.eatforhealth.gov.au/sites/default/files/2022-09/n55a_australian_dietary_guidelines_summary_131014_1.pdf",
+            "local_path": "data/raw/australia-dietary-guidelines.pdf",
+            "format": "pdf",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "us-dietary-guidelines",
+            "title": "Dietary Guidelines for Americans",
+            "publisher": "U.S. Department of Agriculture and U.S. Department of Health and Human Services",
+            "year": "2020",
+            "source_url": "https://cdn.realfood.gov/DGA.pdf",
+            "local_path": "data/raw/us-dietary-guidelines.pdf",
+            "format": "pdf",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "singapore-healthhub-eat-more",
+            "title": "Eat More (Singapore HealthHub)",
+            "publisher": "Health Promotion Board (Singapore)",
+            "year": "2024",
+            "source_url": "https://www.healthhub.sg/programmes/nutrition-hub/eat-more",
+            "local_path": "data/raw/singapore-healthhub-eat-more.html",
+            "format": "html",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        },
+        {
+            "doc_id": "icmr-nin-dietary-guidelines",
+            "title": "Dietary Guidelines for NIN Website",
+            "publisher": "ICMR-NIN",
+            "year": "2024",
+            "source_url": "https://www.nin.res.in/downloads/DietaryGuidelinesforNINwebsite.pdf",
+            "local_path": "data/raw/icmr-nin-dietary-guidelines.pdf",
+            "format": "pdf",
+            "category": "Nutrition",
+            "retrieval_date": "2024-11-20"
+        }
+    ]
+}

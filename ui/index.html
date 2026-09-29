@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dietary Guidance RAG</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#006948",
+            "primary-container": "#00855d",
+            "primary-fixed": "#85f8c4",
+            "primary-fixed-dim": "#68dba9",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#f5fff7",
+            "on-primary-fixed": "#002114",
+            "on-primary-fixed-variant": "#005137",
+            "secondary": "#006c4b",
+            "secondary-container": "#64f9bc",
+            "secondary-fixed": "#68fcbf",
+            "secondary-fixed-dim": "#45dfa4",
+            "on-secondary": "#ffffff",
+            "on-secondary-container": "#00714e",
+            "tertiary": "#825100",
+            "tertiary-container": "#a36700",
+            "tertiary-fixed": "#ffddb8",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-tertiary": "#ffffff",
+            "surface": "#f9f9ff",
+            "surface-dim": "#d3daef",
+            "surface-bright": "#f9f9ff",
+            "surface-variant": "#dce2f7",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f1f3ff",
+            "surface-container": "#e9edff",
+            "surface-container-high": "#e1e8fd",
+            "surface-container-highest": "#dce2f7",
+            "on-surface": "#141b2b",
+            "on-surface-variant": "#3d4a42",
+            "outline": "#6d7a72",
+            "outline-variant": "#bccac0",
+            "background": "#f9f9ff",
+            "on-background": "#141b2b"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            "2xl": "1rem",
+            "3xl": "1.5rem",
+            full: "9999px"
+          },
+          fontFamily: {
+            display: ["Plus Jakarta Sans", "sans-serif"],
+            headline: ["Plus Jakarta Sans", "sans-serif"],
+            title: ["Plus Jakarta Sans", "sans-serif"],
+            body: ["Inter", "sans-serif"],
+            label: ["Plus Jakarta Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+    }
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: #bccac0;
+      border-radius: 9999px;
+    }
+    .citation-ref {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      border-radius: 9999px;
+      background-color: #e1e8fd;
+      color: #006948;
+      margin-left: 0.2rem;
+      margin-right: 0.2rem;
+      vertical-align: super;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .citation-ref:hover {
+      background-color: #006948;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+    .source-card.highlighted {
+      ring: 2px solid #006948;
+      background-color: #f5fff7;
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased h-screen flex flex-col">
+<!-- 1. Minimal Header / Navigation -->
+<header class="h-16 flex-shrink-0 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/40 px-4 lg:px-8 flex items-center justify-between z-30">
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-2.5" href="#">
+<span class="material-symbols-outlined text-[28px] text-primary">health_and_safety</span>
+<span class="font-headline font-bold text-lg text-primary tracking-tight">Dietary RAG</span>
+</a>
+<!-- Status indicator -->
+<div class="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-fixed/30 border border-secondary-fixed-dim/40 text-on-secondary-fixed text-xs font-label font-semibold">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span>Dietary Guidance Assistant • Active</span>
+</div>
+</div>
+<!-- Right Header Actions -->
+<div class="flex items-center gap-2 sm:gap-3">
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low transition-colors text-xs font-label font-medium" id="clearChatBtn" title="Start New Conversation">
+<span class="material-symbols-outlined text-[17px]">restart_alt</span>
+<span class="hidden md:inline">New Session</span>
+</button>
+<div class="h-4 w-px bg-outline-variant/60 hidden sm:block"></div>
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-xs font-label text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[15px]">verified</span>
+<span class="font-medium">Corpus-Grounded</span>
+</div>
+<a class="flex-shrink-0 flex items-center justify-center p-0.5 rounded-full hover:ring-2 hover:ring-primary/30 transition-all ml-1" href="#">
+<img alt="User Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtkqmcAnQrnDetfbzJkpeVxn7RILmj-cjO-JeOdVwlnWBJMxbP-r1JyUpU7bRYWMeeBboCgTHoSAGnvw-UoLPiisUAiwv7V0im2oG1wMIArUx8w73EX4LVcuSPcPrkiQ2MKhpMQPLoHjQri_5XwCN7OMMtf-pauhn7LI1p_6THWqIP-tLVcj7n7sADvQev93VBZbtm68YJOWZavpmC7rvcrDTF9OROhYjOOEDPDTggyc_lpEGtl4iluQ"/>
+</a>
+</div>
+</header>
+<!-- 2. Main Two-Column Viewport: Chatbot & Sources/Citations -->
+<main class="flex-1 flex flex-col lg:flex-row overflow-hidden w-full relative">
+<!-- Primary Left Column: AI Nutrition Chatbot Interface -->
+<section class="flex-1 flex flex-col bg-surface overflow-hidden border-b lg:border-b-0 lg:border-r border-outline-variant/40">
+<!-- Top Chat Context Banner -->
+<div class="px-4 sm:px-6 py-2.5 bg-surface-container-lowest/80 border-b border-outline-variant/30 flex items-center justify-between text-xs text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span>Model: <strong>Dietary Guidance RAG Model</strong> (Corpus-Grounded)</span>
+</div>
+<span class="hidden md:inline font-mono text-[11px] text-outline">Latency: Fast • Verified Documents</span>
+</div>
+<!-- Scrollable Chat Stream -->
+<div class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 scrollbar-thin" id="chatStream">
+<!-- Bot Welcome Bubble -->
+<div class="flex items-start gap-3 max-w-3xl">
+<div class="w-8 h-8 rounded-xl bg-primary text-on-primary flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
+<span class="material-symbols-outlined text-[18px]">smart_toy</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-headline font-semibold text-xs text-on-surface">Dietary Guidance Assistant</span>
+<span class="text-[11px] text-outline">Just now</span>
+</div>
+<div class="p-4 bg-surface-container-lowest rounded-2xl rounded-tl-sm border border-outline-variant/40 shadow-sm text-sm leading-relaxed text-on-surface">
+<p>Welcome to the <strong>Dietary Guidance Chatbot!</strong> I'm your AI assistant for this project.</p>
+<p class="mt-2 text-on-surface-variant text-xs">Ask me questions about nutrition, food safety, and healthy eating. My answers are exclusively generated using the verified corpus documents loaded in our system.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Action Prompt Chips -->
+<div class="px-4 sm:px-6 pt-2 pb-2 bg-surface-container-lowest/50 border-t border-outline-variant/30 flex items-center gap-2 overflow-x-auto scrollbar-thin">
+<span class="text-xs font-label text-outline flex items-center gap-1 whitespace-nowrap pl-1">
+<span class="material-symbols-outlined text-[15px]">tips_and_updates</span> Prompts:
+        </span>
+<button class="prompt-chip px-3 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-primary-fixed/40 hover:text-primary transition-all text-xs font-label whitespace-nowrap border border-outline-variant/30" onclick="fillPrompt(this.innerText)">
+          What does WHO recommend for daily salt intake?
+        </button>
+<button class="prompt-chip px-3 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-primary-fixed/40 hover:text-primary transition-all text-xs font-label whitespace-nowrap border border-outline-variant/30" onclick="fillPrompt(this.innerText)">
+          What are the ICMR guidelines for a balanced diet?
+        </button>
+<button class="prompt-chip px-3 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-primary-fixed/40 hover:text-primary transition-all text-xs font-label whitespace-nowrap border border-outline-variant/30" onclick="fillPrompt(this.innerText)">
+          According to Canada's Food Guide, how should my plate look?
+        </button>
+</div>
+<!-- Bottom Chat Input Bar -->
+<div class="p-4 bg-surface-container-lowest border-t border-outline-variant/40">
+<form class="relative flex items-center gap-2 bg-surface-container-low rounded-2xl p-1.5 border border-outline-variant/40 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all" id="chatForm" onsubmit="handleSend(event)">
+<button class="p-2 text-outline hover:text-on-surface rounded-xl hover:bg-surface-container transition-colors" title="Attach meal photo or blood panel PDF" type="button">
+<span class="material-symbols-outlined text-[20px]">attach_file</span>
+</button>
+<input autocomplete="off" class="flex-1 bg-transparent border-0 outline-none text-sm text-on-surface placeholder:text-outline py-2 px-1 focus:ring-0" id="chatInput" placeholder="Ask any question about dietary guidelines or nutrition..." type="text"/>
+<button class="p-2 text-outline hover:text-primary rounded-xl hover:bg-surface-container transition-colors" title="Voice Input" type="button">
+<span class="material-symbols-outlined text-[20px]">mic</span>
+</button>
+<button class="px-4 py-2 bg-primary text-on-primary font-label text-xs font-bold rounded-xl shadow-md hover:bg-primary-container transition-all flex items-center gap-1 flex-shrink-0" type="submit">
+<span>Send</span>
+<span class="material-symbols-outlined text-[16px]">send</span>
+</button>
+</form>
+<div class="mt-2 px-2 flex items-center justify-between text-[11px] text-outline">
+<div class="flex items-center gap-2">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-primary">shield</span>
+              Verified corpus documents only
+            </span>
+<span>•</span>
+<span>No speculative AI advice</span>
+</div>
+<span>Shift + Enter for new line</span>
+</div>
+</div>
+</section>
+<!-- Secondary Right Column: Verified Scientific Sources & Citations List -->
+<aside class="w-full lg:w-[480px] xl:w-[540px] flex-shrink-0 flex flex-col bg-surface-container-lowest overflow-hidden" id="sourcesColumn">
+<!-- Sources Header -->
+<div class="p-4 sm:p-5 border-b border-outline-variant/40 space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-xl bg-secondary-fixed/50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+</div>
+<div>
+<h2 class="font-headline font-bold text-sm text-on-surface">Corpus Documents</h2>
+<span class="text-[11px] text-outline">Available knowledge base documents</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full text-xs font-label font-bold bg-primary text-on-primary" id="docCountBadge">
+            0 Documents
+          </span>
+</div>
+<!-- Citation Topic Filter Tabs -->
+<div class="flex items-center gap-1.5 overflow-x-auto scrollbar-thin pt-1" id="citationTabs">
+<button class="cit-tab active px-3 py-1 rounded-lg text-xs font-label font-semibold bg-primary text-on-primary shadow-sm whitespace-nowrap" data-filter="all" onclick="filterCitations('all', this)">
+            All Documents
+          </button>
+<button class="cit-tab px-3 py-1 rounded-lg text-xs font-label font-semibold bg-surface-container-low text-on-surface-variant hover:bg-surface-container whitespace-nowrap" id="tabRelated" data-filter="related" onclick="filterCitations('related', this)">
+            Related to Query
+          </button>
+</div>
+</div>
+<!-- Scrollable Sources List Cards -->
+<div class="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 scrollbar-thin bg-surface-container-low/40" id="sourcesList">
+<!-- Citation Card 1 -->
+<div class="source-card bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/40 shadow-sm hover:shadow-md transition-all space-y-2.5" data-category="meta" id="source-1">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary font-label font-bold text-xs flex items-center justify-center flex-shrink-0">
+                1
+              </span>
+<span class="font-headline font-semibold text-xs text-primary">American Journal of Clinical Nutrition</span>
+</div>
+<span class="px-2 py-0.5 bg-secondary-fixed/50 text-on-primary-fixed-variant rounded-md text-[10px] font-label font-bold uppercase tracking-wider">
+              Meta-Analysis
+            </span>
+</div>
+<h3 class="font-headline text-sm font-bold text-on-surface leading-snug">
+            Ascorbic Acid and Non-Heme Iron Bioavailability: Systematic Review of Micronutrient Synergy
+          </h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Evaluates 42 clinical crossover studies quantifying chelating effects of organic fruit acids on non-heme ferritin release in plant matrices. Confirms a dose-dependent 300% uptake increase with 75-100mg Vitamin C co-administration.
+          </p>
+<div class="pt-2 flex items-center justify-between text-[11px] text-outline border-t border-outline-variant/30">
+<div class="flex items-center gap-2">
+<span>Pub: <strong>2023</strong></span>
+<span>•</span>
+<span class="font-mono text-on-surface-variant">PMID: 35142890</span>
+</div>
+<a class="inline-flex items-center gap-1 text-primary hover:underline font-label font-semibold" href="https://pubmed.ncbi.nlm.nih.gov" rel="noopener noreferrer" target="_blank">
+<span>NCBI Link</span>
+<span class="material-symbols-outlined text-[13px]">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Citation Card 2 -->
+<div class="source-card bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/40 shadow-sm hover:shadow-md transition-all space-y-2.5" data-category="trial" id="source-2">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary font-label font-bold text-xs flex items-center justify-center flex-shrink-0">
+                2
+              </span>
+<span class="font-headline font-semibold text-xs text-primary">Harvard T.H. Chan School of Public Health</span>
+</div>
+<span class="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed rounded-md text-[10px] font-label font-bold uppercase tracking-wider">
+              Clinical Trial
+            </span>
+</div>
+<h3 class="font-headline text-sm font-bold text-on-surface leading-snug">
+            The Nutrition Source: Plant-Based Iron Absorption &amp; Organic Acid Enhancers
+          </h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Standardization trial on reducing inhibitors (phytic acid in pulses) through targeted meal combining and slight thermal activation. Vitamin C acts as an electron donor to sustain soluble iron complexes through duodenal transit.
+          </p>
+<div class="pt-2 flex items-center justify-between text-[11px] text-outline border-t border-outline-variant/30">
+<div class="flex items-center gap-2">
+<span>Pub: <strong>2024</strong></span>
+<span>•</span>
+<span class="text-on-surface-variant font-mono">HSPH-Nutr-88</span>
+</div>
+<a class="inline-flex items-center gap-1 text-primary hover:underline font-label font-semibold" href="https://www.hsph.harvard.edu/nutritionsource/" rel="noopener noreferrer" target="_blank">
+<span>Harvard Read</span>
+<span class="material-symbols-outlined text-[13px]">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Citation Card 3 -->
+<div class="source-card bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/40 shadow-sm hover:shadow-md transition-all space-y-2.5" data-category="guideline" id="source-3">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary font-label font-bold text-xs flex items-center justify-center flex-shrink-0">
+                3
+              </span>
+<span class="font-headline font-semibold text-xs text-primary">USDA FoodData Central &amp; FAO/WHO</span>
+</div>
+<span class="px-2 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed rounded-md text-[10px] font-label font-bold uppercase tracking-wider">
+              Dietary Guidelines
+            </span>
+</div>
+<h3 class="font-headline text-sm font-bold text-on-surface leading-snug">
+            Digestible Indispensable Amino Acid Score (DIAAS) of Legumes and Seed Pairings
+          </h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Standard reference database defining amino acid profiles. Demonstrates how Combining Lens culinaris (lentils, DIAAS ~0.60) with Sesamum indicum (tahini, DIAAS ~0.72) overcomes mutual leucine and sulfur-amino acid deficits to reach DIAAS &gt;0.95.
+          </p>
+<div class="pt-2 flex items-center justify-between text-[11px] text-outline border-t border-outline-variant/30">
+<div class="flex items-center gap-2">
+<span>Pub: <strong>2023 Rev</strong></span>
+<span>•</span>
+<span class="text-on-surface-variant font-mono">FDC ID: 172420</span>
+</div>
+<a class="inline-flex items-center gap-1 text-primary hover:underline font-label font-semibold" href="https://fdc.nal.usda.gov" rel="noopener noreferrer" target="_blank">
+<span>USDA Portal</span>
+<span class="material-symbols-outlined text-[13px]">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Citation Card 4 -->
+<div class="source-card bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/40 shadow-sm hover:shadow-md transition-all space-y-2.5" data-category="trial" id="source-4">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary font-label font-bold text-xs flex items-center justify-center flex-shrink-0">
+                4
+              </span>
+<span class="font-headline font-semibold text-xs text-primary">The Lancet Planetary &amp; Clinical Health</span>
+</div>
+<span class="px-2 py-0.5 bg-primary-fixed text-on-primary-fixed rounded-md text-[10px] font-label font-bold uppercase tracking-wider">
+              Clinical Trial
+            </span>
+</div>
+<h3 class="font-headline text-sm font-bold text-on-surface leading-snug">
+            Inhibition of Food Iron Absorption by Dietary Polyphenols, Chlorogenic Acid &amp; Tannins
+          </h3>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            Randomized crossover study in 110 healthy adults observing serum ferritin tracer response. Coffee and black tea consumed within one hour of meals lowered non-heme absorption by 60% and 75% respectively due to insoluble tannate chelates.
+          </p>
+<div class="pt-2 flex items-center justify-between text-[11px] text-outline border-t border-outline-variant/30">
+<div class="flex items-center gap-2">
+<span>Pub: <strong>2022</strong></span>
+<span>•</span>
+<span class="font-mono text-on-surface-variant">DOI: 10.1016/S0140</span>
+</div>
+<a class="inline-flex items-center gap-1 text-primary hover:underline font-label font-semibold" href="https://www.thelancet.com" rel="noopener noreferrer" target="_blank">
+<span>Lancet View</span>
+<span class="material-symbols-outlined text-[13px]">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Sources Footer / Verification Trust Bar -->
+<div class="p-3.5 bg-surface-container-lowest border-t border-outline-variant/40 flex items-center justify-between text-xs text-outline">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[17px]">verified_user</span>
+<span class="font-label font-semibold text-on-surface">100% Corpus Verified</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- Interactive Script for AI Chat and Sources Synchronized Highlighting -->
+<script>
+    // Jump and highlight source card when citation pill in chat bubble is clicked
+    function focusCitation(sourceId) {
+      const card = document.getElementById(sourceId);
+      if (!card) return;
+
+      // Ensure 'all' filter tab is selected if source is filtered out
+      const activeFilter = document.querySelector('.cit-tab.active')?.dataset?.filter;
+      if (activeFilter && activeFilter !== 'all' && !card.dataset.category.includes(activeFilter)) {
+        filterCitations('all', document.querySelector('.cit-tab[data-filter="all"]'));
+      }
+
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+      // Flash highlight ring
+      document.querySelectorAll('.source-card').forEach(c => c.classList.remove('ring-2', 'ring-primary', 'bg-primary-fixed/20'));
+      card.classList.add('ring-2', 'ring-primary', 'bg-primary-fixed/20');
+
+      setTimeout(() => {
+        card.classList.remove('ring-2', 'ring-primary', 'bg-primary-fixed/20');
+      }, 2500);
+    }
+
+    // Filter citations list by topic tabs
+    function filterCitations(category, element) {
+      document.querySelectorAll('.cit-tab').forEach(tab => {
+        tab.classList.remove('active', 'bg-primary', 'text-on-primary', 'shadow-sm');
+        tab.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+      });
+      element.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+      element.classList.add('active', 'bg-primary', 'text-on-primary', 'shadow-sm');
+
+      const cards = document.querySelectorAll('.source-card');
+      cards.forEach(card => {
+        if (category === 'all') {
+          card.style.display = card.dataset.category === 'all' ? 'block' : 'none';
+        } else if (category === 'related') {
+          card.style.display = card.dataset.category === 'related' ? 'block' : 'none';
+        }
+      });
+    }
+
+    // Quick prompt chip click
+    function fillPrompt(text) {
+      const input = document.getElementById('chatInput');
+      input.value = text;
+      input.focus();
+    }
+
+    // Real API Chat Submission
+    async function handleSend(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chatStream = document.getElementById('chatStream');
+      const sourcesList = document.getElementById('sourcesList');
+
+      // Append user bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = "flex items-start justify-end gap-3 max-w-3xl ml-auto";
+      userBubble.innerHTML = `
+        <div class="space-y-1 text-right">
+          <div class="flex items-center justify-end gap-2">
+            <span class="text-[11px] text-outline">Now</span>
+            <span class="font-headline font-semibold text-xs text-on-surface">You</span>
+          </div>
+          <div class="p-4 bg-primary text-on-primary rounded-2xl rounded-tr-sm shadow-md text-sm text-left leading-relaxed">
+            ${escapeHtml(text)}
+          </div>
+        </div>
+        <img alt="User" class="w-8 h-8 rounded-xl object-cover border border-outline-variant/60 flex-shrink-0 mt-0.5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtkqmcAnQrnDetfbzJkpeVxn7RILmj-cjO-JeOdVwlnWBJMxbP-r1JyUpU7bRYWMeeBboCgTHoSAGnvw-UoLPiisUAiwv7V0im2oG1wMIArUx8w73EX4LVcuSPcPrkiQ2MKhpMQPLoHjQri_5XwCN7OMMtf-pauhn7LI1p_6THWqIP-tLVcj7n7sADvQev93VBZbtm68YJOWZavpmC7rvcrDTF9OROhYjOOEDPDTggyc_lpEGtl4iluQ"/>
+      `;
+      chatStream.appendChild(userBubble);
+      input.value = '';
+      chatStream.scrollTop = chatStream.scrollHeight;
+      
+      const submitBtn = document.querySelector('#chatForm button[type="submit"]');
+      submitBtn.disabled = true;
+
+      // Loading bubble
+      const loadingBubble = document.createElement('div');
+      loadingBubble.id = 'loadingBubble';
+      loadingBubble.className = "flex items-start gap-3 max-w-3xl";
+      loadingBubble.innerHTML = `
+          <div class="w-8 h-8 rounded-xl bg-primary text-on-primary flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
+            <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+          </div>
+          <div class="space-y-2 flex-1">
+            <div class="p-5 bg-surface-container-lowest rounded-2xl rounded-tl-sm border border-outline-variant/40 shadow-sm text-sm leading-relaxed space-y-3 text-on-surface">
+              <span class="w-2 h-2 bg-primary rounded-full animate-bounce inline-block"></span>
+              <span class="w-2 h-2 bg-primary rounded-full animate-bounce inline-block" style="animation-delay: 0.1s"></span>
+              <span class="w-2 h-2 bg-primary rounded-full animate-bounce inline-block" style="animation-delay: 0.2s"></span>
+            </div>
+          </div>
+      `;
+      chatStream.appendChild(loadingBubble);
+      chatStream.scrollTop = chatStream.scrollHeight;
+
+      try {
+        const response = await fetch('/api/v1/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: text })
+        });
+        const data = await response.json();
+        
+        loadingBubble.remove();
+        
+        let answerHtml = data.refusal_type ? `Refusal: ${data.refusal_type}` : data.answer.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        let citationsHtml = '';
+        if (data.citations && data.citations.length > 0) {
+            citationsHtml = '<div class="mt-4 pt-2 border-t border-outline-variant/30 text-xs"><strong class="text-primary block mb-2">Sources:</strong>';
+            
+            // clear old related citations before adding new ones
+            document.querySelectorAll('.source-card[data-category="related"]').forEach(e => e.remove());
+            
+            data.citations.forEach((c, idx) => {
+                const sid = 'cit-' + Date.now() + '-' + idx;
+                citationsHtml += `<a href="#" onclick="focusCitation('${sid}'); return false;" class="citation-ref">${idx+1}</a> `;
+                
+                // Add to sidebar
+                const card = document.createElement('div');
+                card.id = sid;
+                card.className = "source-card bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/40 shadow-sm hover:shadow-md transition-all space-y-2.5";
+                card.dataset.category = "related";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-primary text-on-primary font-label font-bold text-xs flex items-center justify-center flex-shrink-0">${idx+1}</span>
+                            <span class="font-headline font-semibold text-xs text-primary">${escapeHtml(c.publisher || 'Unknown Publisher')}</span>
+                        </div>
+                    </div>
+                    <h3 class="font-headline text-sm font-bold text-on-surface leading-snug">${escapeHtml(c.document_name || 'Document')}</h3>
+                    <div class="pt-2 flex items-center justify-between text-[11px] text-outline border-t border-outline-variant/30">
+                        <div class="flex items-center gap-2">
+                            <span>Year: <strong>${escapeHtml(String(c.year || 'N/A'))}</strong></span>
+                        </div>
+                        <a href="${c.source_url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-primary hover:underline font-label font-semibold">
+                            <span>Open PDF</span>
+                            <span class="material-symbols-outlined text-[13px]">open_in_new</span>
+                        </a>
+                    </div>
+                `;
+                sourcesList.appendChild(card);
+            });
+            citationsHtml += '</div>';
+            
+            // update reference count
+            const counter = document.querySelector('#sourcesColumn .rounded-full.bg-primary');
+            if (counter) counter.textContent = document.querySelectorAll('.source-card[data-category="all"]').length + " Documents";
+
+            // Switch to Related tab automatically
+            const tabRelated = document.getElementById('tabRelated');
+            if (tabRelated) filterCitations('related', tabRelated);
+        }
+
+        const botBubble = document.createElement('div');
+        botBubble.className = "flex items-start gap-3 max-w-3xl";
+        botBubble.innerHTML = `
+          <div class="w-8 h-8 rounded-xl bg-primary text-on-primary flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
+            <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+          </div>
+          <div class="space-y-2 flex-1">
+            <div class="flex items-center gap-2">
+              <span class="font-headline font-semibold text-xs text-on-surface">Dietary Guidance Assistant</span>
+            </div>
+            <div class="p-5 bg-surface-container-lowest rounded-2xl rounded-tl-sm border border-outline-variant/40 shadow-sm text-sm leading-relaxed space-y-3 text-on-surface">
+              <p>${answerHtml}</p>
+              ${citationsHtml}
+            </div>
+          </div>
+        `;
+        chatStream.appendChild(botBubble);
+        chatStream.scrollTop = chatStream.scrollHeight;
+        
+      } catch (err) {
+        if(document.getElementById('loadingBubble')) loadingBubble.remove();
+        const botBubble = document.createElement('div');
+        botBubble.className = "flex items-start gap-3 max-w-3xl";
+        botBubble.innerHTML = `
+          <div class="w-8 h-8 rounded-xl bg-error text-on-error flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
+            <span class="material-symbols-outlined text-[18px]">error</span>
+          </div>
+          <div class="space-y-2 flex-1">
+            <div class="p-5 bg-surface-container-lowest rounded-2xl rounded-tl-sm border border-outline-variant/40 shadow-sm text-sm leading-relaxed text-error">
+              Error connecting to the API.
+            </div>
+          </div>
+        `;
+        chatStream.appendChild(botBubble);
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+
+
+    // Clear session interaction
+    document.getElementById('clearChatBtn').addEventListener('click', () => {
+      if (confirm('Start a fresh nutrition consultation session?')) {
+        location.reload();
+      }
+    });
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('/api/v1/documents');
+            const docs = await response.json();
+            
+            const sourcesList = document.getElementById('sourcesList');
+            sourcesList.innerHTML = '';
+            window.hasClearedMockSources = true;
+            
+            docs.forEach((doc, idx) => {
+                const sid = 'doc-' + idx;
+                const card = document.createElement('div');
+                card.id = sid;
+                card.className = "source-card bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/40 shadow-sm hover:shadow-md transition-all space-y-2.5";
+                card.dataset.category = "all";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-primary text-on-primary font-label font-bold text-xs flex items-center justify-center flex-shrink-0">${idx+1}</span>
+                            <span class="font-headline font-semibold text-xs text-primary">${escapeHtml(doc.publisher || 'Unknown')}</span>
+                        </div>
+                    </div>
+                    <h3 class="font-headline text-sm font-bold text-on-surface leading-snug">${escapeHtml(doc.title || doc.doc_id || 'Document')}</h3>
+                    <div class="pt-2 flex items-center justify-between text-[11px] text-outline border-t border-outline-variant/30">
+                        <div class="flex items-center gap-2">
+                            <span>Year: <strong>${escapeHtml(String(doc.year || 'N/A'))}</strong></span>
+                        </div>
+                    </div>
+                `;
+                sourcesList.appendChild(card);
+            });
+            
+            const counter = document.getElementById('docCountBadge');
+            if (counter) counter.textContent = docs.length + " Documents";
+            
+        } catch(e) {
+            console.error('Failed to load documents', e);
+        }
+    });
+  </script>
+</body></html>

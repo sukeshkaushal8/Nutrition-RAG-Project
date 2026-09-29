@@ -1,0 +1,36 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# === Environment ===
+.env
+.venv/
+venv/
+env/
+
+# === Data (downloaded/generated — not tracked in git) ===
+data/raw/
+data/parsed/
+data/chunks/
+data/chroma/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Testing ===
+.pytest_cache/
+htmlcov/
+.coverage
