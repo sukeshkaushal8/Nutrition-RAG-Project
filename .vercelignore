@@ -1,0 +1,10 @@
+# Ignore Python and Backend files for Vercel deployment
+# We only want Vercel to host the static UI files
+requirements.txt
+pyproject.toml
+src/
+tests/
+scripts/
+Dockerfile
+docker-compose.yml
+Procfile
