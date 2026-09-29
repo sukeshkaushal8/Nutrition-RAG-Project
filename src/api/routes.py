@@ -6,7 +6,13 @@ from src.api.schemas import ChatRequest, ChatResponse, DocumentRegistryEntry
 from src.orchestrator import Orchestrator
 
 router = APIRouter(prefix="/api/v1")
-orchestrator = Orchestrator()
+orchestrator = None
+
+def get_orchestrator():
+    global orchestrator
+    if orchestrator is None:
+        orchestrator = Orchestrator()
+    return orchestrator
 
 def load_registry() -> List[Dict[str, Any]]:
     registry_path = "data/corpus_registry.json"
@@ -18,7 +24,8 @@ def load_registry() -> List[Dict[str, Any]]:
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
-    response = await orchestrator.answer(
+    orch = get_orchestrator()
+    response = await orch.answer(
         query=request.query, 
         filter_document=request.filter_document
     )
