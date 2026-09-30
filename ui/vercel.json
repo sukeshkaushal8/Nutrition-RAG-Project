@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/v1/(.*)",
+      "destination": "https://nutrition-rag-project-production.up.railway.app/api/v1/$1"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "https://nutrition-rag-project-production.up.railway.app/api/v1/$1"
     }
