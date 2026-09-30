@@ -27,3 +27,8 @@ async def read_index():
     return {"message": "UI not found"}
 
 app.mount("/", StaticFiles(directory=ui_path, html=True), name="ui")
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("src.api.main:app", host="0.0.0.0", port=port)
