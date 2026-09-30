@@ -26,7 +26,9 @@ async def read_index():
         return FileResponse(index_file)
     return {"message": "UI not found"}
 
-app.mount("/", StaticFiles(directory=ui_path, html=True), name="ui")
+@app.get("/ping")
+async def ping():
+    return {"ping": "ok"}
 
 if __name__ == "__main__":
     import uvicorn
