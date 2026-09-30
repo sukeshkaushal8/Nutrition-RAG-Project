@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://nutrition-rag-project-production.up.railway.app/api/$1"
+      "destination": "https://nutrition-rag-project-production.up.railway.app/api/v1/$1"
     }
   ]
 }
