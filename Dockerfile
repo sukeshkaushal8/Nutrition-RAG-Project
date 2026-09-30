@@ -17,4 +17,5 @@ COPY . .
 
 # Explicitly start the application
 EXPOSE 8000
-CMD ["sh","-c","echo PORT=$PORT && exec uvicorn src.api.main:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh","-c","exec uvicorn src.api.main:app --host 0.0.0.0 --port 8000"]
+# rebuild trigger
