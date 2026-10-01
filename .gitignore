@@ -16,9 +16,10 @@ env/
 # === Data (downloaded/generated — not tracked in git) ===
 # data/raw/ is intentionally tracked so the Docker image ships with
 # pre-downloaded documents (avoids geo-blocked / flaky re-downloads on Railway)
+# data/chroma/ is intentionally tracked so Railway loads pre-built vectors
+# (Railway free tier OOMs during CPU embedding, so we pre-compute locally)
 data/parsed/
 data/chunks/
-data/chroma/
 
 # === IDE ===
 .vscode/
