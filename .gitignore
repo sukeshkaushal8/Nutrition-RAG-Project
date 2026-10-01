@@ -14,7 +14,8 @@ venv/
 env/
 
 # === Data (downloaded/generated — not tracked in git) ===
-data/raw/
+# data/raw/ is intentionally tracked so the Docker image ships with
+# pre-downloaded documents (avoids geo-blocked / flaky re-downloads on Railway)
 data/parsed/
 data/chunks/
 data/chroma/

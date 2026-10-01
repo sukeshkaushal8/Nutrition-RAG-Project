@@ -2,10 +2,27 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from contextlib import asynccontextmanager
+import logging
 import os
-from src.api.routes import router
+from src.api.routes import router, get_orchestrator
 
-app = FastAPI(title="Dietary Guidance RAG API", version="1.0.0")
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Pre-load the embedding model and orchestrator at startup to avoid
+    slow first-query latency from on-demand model loading."""
+    logger.info("Pre-loading embedding model and orchestrator...")
+    try:
+        get_orchestrator()   # initialises Embedder + VectorStore + LLMClient
+        logger.info("Orchestrator ready.")
+    except Exception as e:
+        logger.warning(f"Could not pre-load orchestrator: {e}")
+    yield  # app runs here
+    logger.info("Shutting down.")
+
+app = FastAPI(title="Dietary Guidance RAG API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
