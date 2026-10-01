@@ -30,6 +30,21 @@ async def read_index():
 async def ping():
     return {"ping": "ok"}
 
+@app.get("/api/v1/debug/corpus")
+async def debug_corpus():
+    """Returns Chroma vector count + persist path – use to verify ingestion."""
+    import os
+    from src.retrieval.vector_store import VectorStore
+    from src.config import settings
+    vs = VectorStore()
+    count = vs.count()
+    return {
+        "chroma_persist_dir": settings.chroma_persist_dir,
+        "abs_path": os.path.abspath(settings.chroma_persist_dir),
+        "dir_exists": os.path.isdir(settings.chroma_persist_dir),
+        "vector_count": count,
+    }
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
